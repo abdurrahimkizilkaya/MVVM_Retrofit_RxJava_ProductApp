@@ -6,15 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.solocatapps.mvvmproductlistapp.model.Product
 import com.solocatapps.mvvmproductlistapp.model.ProductResponse
+import com.solocatapps.mvvmproductlistapp.service.NetworkState
 import com.solocatapps.mvvmproductlistapp.service.ProductApi
 import com.solocatapps.mvvmproductlistapp.service.ProductApiClient
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class ProductsViewModel(/*private val productApi : ProductApi,
-                        private val disposable : CompositeDisposable*/)
-    : ViewModel() {
+class ProductsViewModel() : ViewModel() {
 
     companion object {
         private const val TAG = "ProductViewModel"
@@ -41,15 +40,11 @@ class ProductsViewModel(/*private val productApi : ProductApi,
                     .subscribe(
                         { response ->
                             _responseLoading.postValue(false)
-                            val productsList = ArrayList<Product>()
-
-                            for(product in response.products)
-                                productsList.add(product)
-
-                            _response.postValue(productsList)
+                            _response.postValue(response.products)
                         },
                         {error ->
                             _responseLoading.postValue(false)
+                            Log.d(TAG, error.toString())
                         }
                     )
             )

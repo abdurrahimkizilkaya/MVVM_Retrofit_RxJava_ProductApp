@@ -1,16 +1,23 @@
 package com.solocatapps.mvvmproductlistapp.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.solocatapps.mvvmproductlistapp.databinding.CommonStandingsRowBinding
+import coil.load
+import com.solocatapps.mvvmproductlistapp.databinding.ProductRowBinding
 import com.solocatapps.mvvmproductlistapp.model.Product
+import com.solocatapps.mvvmproductlistapp.util.loadWithCoil
 
 class ProductsAdapter(private val productListFragment: ProductListFragment) :  RecyclerView.Adapter<ProductsAdapter.MyViewHolder>() {
-
-    inner class MyViewHolder(val binding: CommonStandingsRowBinding) :
+    
+    companion object{
+        const val TAG = "ProductsAdapter"
+    }
+    
+    inner class MyViewHolder(val binding: ProductRowBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     private val diffCallback = object : DiffUtil.ItemCallback<Product>() {
@@ -32,7 +39,7 @@ class ProductsAdapter(private val productListFragment: ProductListFragment) :  R
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            CommonStandingsRowBinding.inflate(
+            ProductRowBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
@@ -40,12 +47,17 @@ class ProductsAdapter(private val productListFragment: ProductListFragment) :  R
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentProduct = products[position]
-        holder.binding.apply {
-            //val imageLoaderForSvg = loadWithCoil(holder.itemView.context)
+        val imageLoader = loadWithCoil(holder.itemView.context)
 
-            holder.itemView.setOnClickListener() {
-                //leagueDetailsStandingsFragment.moveToTeamDetailsFragment(currentLeague.team.id)
-            }
+        holder.binding.apply {
+            imageView.load(currentProduct.thumbnail, imageLoader)
+            textViewTitle.text = currentProduct.title
+            textViewDescription.text = currentProduct.description
+            textViewPrice.text = currentProduct.price.toString() + "$"
+        }
+
+        holder.itemView.setOnClickListener() {
+            productListFragment.moveToProductDetailFragment(currentProduct)
         }
     }
 

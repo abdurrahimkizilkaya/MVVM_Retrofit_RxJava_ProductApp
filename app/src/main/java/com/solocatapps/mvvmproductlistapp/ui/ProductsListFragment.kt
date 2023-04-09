@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.solocatapps.mvvmproductlistapp.R
 import com.solocatapps.mvvmproductlistapp.databinding.FragmentProductListBinding
+import com.solocatapps.mvvmproductlistapp.model.Product
 
 class ProductListFragment : Fragment() {
 
@@ -43,6 +45,11 @@ class ProductListFragment : Fragment() {
         productsAdapter = ProductsAdapter(this)
         viewModel.getAllProducts()
 
+        setupRecyclerView()
+        setupObservables()
+    }
+
+    private fun setupRecyclerView(){
         binding.rvProductList.apply {
             adapter = productsAdapter
             layoutManager = LinearLayoutManager(
@@ -50,15 +57,20 @@ class ProductListFragment : Fragment() {
                 false
             )
             setHasFixedSize(false)
-            /**
-             * if your adapter is always empty, using this policy can help prevent unnecessary memory usage,
-             * as the state of the RecyclerView will not be stored in memory.
-             */
-            productsAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
+    }
 
-        viewModel.responseProducts.observe(viewLifecycleOwner, Observer { listProducts ->
+    private fun setupObservables(){
+        viewModel.responseLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        viewModel.responseProducts.observe(viewLifecycleOwner) { listProducts ->
             productsAdapter.products = listProducts
-        })
+        }
+    }
+
+    fun moveToProductDetailFragment(product : Product){
+        val action = ProductListFragmentDirections.actionListFragmentToDetailFragment(product)
+        findNavController().navigate(action)
     }
 }
