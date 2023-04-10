@@ -33,7 +33,10 @@ To get started with the app, clone the repository and open it using Android Stud
 
 ## 📷 Screenshots
 
-![Screenshot 1](screenshots/screenshot_1.png) ![Screenshot 2](screenshots/screenshot_2.png)
+<p align="center">
+  <img src="screenshots/screenshot_1.png" width="25%" alt="Screenshot 1" />
+  <img src="screenshots/screenshot_2.png" width="25%" alt="Screenshot 2" />
+</p>
 
 ## 🎨 Navigation Graph
 
