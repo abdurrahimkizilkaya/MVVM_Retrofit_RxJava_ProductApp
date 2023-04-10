@@ -53,6 +53,8 @@ class ProductDetailFragment : Fragment() {
             textTitle.text = product.title
             textDescription.text = product.description
             textPrice.text = product.price.toString() + "$"
+            ratingBar.rating = product.rating.toFloat()
+            textStock.text = "Available amount: " +  product.stock
         }
 
     }
