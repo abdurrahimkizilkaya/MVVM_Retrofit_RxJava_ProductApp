@@ -43,13 +43,20 @@ implementation 'io.reactivex.rxjava3:rxjava:3.0.13'
 implementation 'com.jakewharton.retrofit:retrofit2-rxjava3-adapter:1.0.0'
 </pre>
 
-- Create an interface to define the API endpoints you want to call. In this example, we will be calling an endpoint to retrieve a list of products.
+- Create an interface to define the API endpoints you want to call. In this example, we will be calling an endpoint to retrieve a list of products. While creating the API interface, it would be nice to explain what is Single and Observable in RxJava. In RxJava, Single and Observable are different types of reactive streams that represent different **ways of emitting data and handling errors**.
 <pre>
 interface ProductApi {
     @GET(GET_ALL_PRODUCTS)
-    fun getAllProducts(): Observable<ProductResponse>
+    //"Single" is useful for scenarios where you only need a single value
+    fun getAllProducts(): <strong>Single</strong>&lt;ProductResponse&gt;
+    //"Observable" would also work just fine.
+    //fun getAllProducts(): <strong>Observable</strong>&lt;ProductResponse&gt;
 }
 </pre>
+
+**Single** represents a stream that will emit a **single value**, or an error if something goes wrong. This is useful for scenarios where you only need a single value, such as fetching a user profile from a remote server. You can subscribe to a Single stream using the subscribe() method, which takes two callbacks: onSuccess() for handling the emitted value, and onError() for handling any errors that occur. If you expect to receive only one response from the server and you don't need to cancel the network call, then Single is a good choice. Single is more lightweight than Observable, as it only emits a single value or error.
+
+**Observable** represents a stream that can emit **zero or more values**, or an error if something goes wrong. This is the most common type of stream in RxJava, and is used for most data processing scenarios. You can subscribe to an Observable stream using the subscribe() method, which takes three callbacks: onNext() for handling each emitted value, onComplete() for handling the stream completion, and onError() for handling any errors that occur. If you want to receive multiple responses from the server, or if you need to cancel the network call at any point, then Observable is a better choice. Observable is more flexible and powerful than Single, as it can emit multiple values, errors, and completion events. Keep in mind that in our example Single Or Observable will both work just fine but we only expect to get single response in our example, so using Single would be enough.
 
 - Create a class that will handle the creation of the Retrofit client. In this example, we will create a class called ProductApiClient.
 
